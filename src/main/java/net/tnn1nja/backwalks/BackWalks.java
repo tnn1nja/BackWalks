@@ -7,12 +7,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.Math;
+import java.util.ArrayList;
+import java.util.UUID;
 
 public final class BackWalks extends JavaPlugin implements Listener, CommandExecutor{
-
+    public static ArrayList<UUID> dmTracker = new ArrayList<UUID>();
     @Override
     public void onEnable(){
         Bukkit.getLogger().info("[BackWalks] Successfully Loaded!");
@@ -36,9 +39,19 @@ public final class BackWalks extends JavaPlugin implements Listener, CommandExec
             double bDiff = Math.abs(diff-180);
             if (bDiff > 20){
                 if (!(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))){
+                    dmTracker.add(p.getUniqueId());
                     p.setHealth(0);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent e){
+        Player p = e.getEntity().getPlayer();
+        if(dmTracker.contains(p.getUniqueId())){
+            dmTracker.remove(p.getUniqueId());
+            e.setDeathMessage(p.getDisplayName() + " moved forwards");
         }
     }
 
