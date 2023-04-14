@@ -1,0 +1,4 @@
+name: BackWalks
+version: '${project.version}'
+main: net.tnn1nja.backwalks.BackWalks
+api-version: 1.19
