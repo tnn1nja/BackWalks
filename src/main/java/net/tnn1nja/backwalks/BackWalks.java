@@ -25,20 +25,20 @@ public final class BackWalks extends JavaPlugin implements Listener, CommandExec
     @EventHandler
     public void onMove(PlayerMoveEvent e){
         Player p = e.getPlayer();
-        Location f = e.getFrom();
-        Location t = e.getTo();
+        if (!(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))){
+            Location f = e.getFrom();
+            Location t = e.getTo();
 
-        float yaw = p.getLocation().getYaw();
-        double[] vYaw = vYawCalc(f, t);
+            float yaw = p.getLocation().getYaw();
+            double[] vYaw = vYawCalc(f, t);
 
-        if (vYaw[1] == 1){
-            double diff = Math.abs((vYaw[0]+180) - (yaw+180));
-            if (diff > 180){
-                diff = 360-diff;
-            }
-            double bDiff = Math.abs(diff-180);
-            if (bDiff > 20){
-                if (!(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))){
+            if (vYaw[1] == 1) {
+                double diff = Math.abs((vYaw[0] + 180) - (yaw + 180));
+                if (diff > 180) {
+                    diff = 360 - diff;
+                }
+                double bDiff = Math.abs(diff - 180);
+                if (bDiff > 20) {
                     dmTracker.add(p.getUniqueId());
                     p.setHealth(0);
                 }
@@ -51,7 +51,7 @@ public final class BackWalks extends JavaPlugin implements Listener, CommandExec
         Player p = e.getEntity().getPlayer();
         if(dmTracker.contains(p.getUniqueId())){
             dmTracker.remove(p.getUniqueId());
-            e.setDeathMessage(p.getDisplayName() + " moved forwards");
+            e.setDeathMessage(p.getDisplayName() + " moved unsatisfactorily");
         }
     }
 
